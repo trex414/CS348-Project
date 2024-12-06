@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Planner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .welcome-message {
+            font-size: 30px;
+            color: black;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+        .summary-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .summary-container .total-calories {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .form-container, .macro-chart-container {
+            float: right;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .form-container {
+            width: 60%;
+            padding-right: 20px;
+        }
+        .macro-chart-container {
+            width: 20%;
+        }
+        .form-container label, .form-container select, .form-container input{
+            display: block;
+            margin: 10px 0;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .add-btn, .remove-btn, .return-btn {
+            width: 150px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+        }
+        .add-btn {
+            background-color: #a659df;
+        }
+        .remove-btn {
+            background-color: #ff6600;
+        }
+        .return-btn {
+            background-color: orange;
+            margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        .table-container {
+            clear: both;
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+        }
+        .macro-totals {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .filter-group label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .protein-range {
+            display: flex;
+            gap: 5px;
+        }
+
+        .filters-section {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .filters-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .food-filters {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+        }
+
+        .filters-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .filters-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .protein-range {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .protein-range input {
+            width: 70px;
+        }
+
+        .date-selector-box {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+        }
+
+        .filters-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .date-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .filter-group input[type="date"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .date-selector-box,
+        .food-filters,
+        .food-selection-box {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+        }
+
+        .filters-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        .filters-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 150px;
+        }
+
+        .filter-group:has(#food_entry) {
+            min-width: 300px; /* Wider for food selection dropdown */
+        }
+
+        .filter-group label {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 5px 0;
+        }
+
+        .standard-btn {
+            font-size: 16px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .return-btn {
+            background-color: orange;
+        }
+
+        .return-btn:hover {
+            background-color: darkorange;
+        }
+
+        .add-btn {
+            background-color: #a659df;
+        }
+
+        .add-btn:hover {
+            background-color: #c48df2;
+        }
+
+        .move-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .move-btn:hover {
+            background-color: #45a049;
+        }
+
+        input[type="date"] {
+            padding: 4px;
+            margin-right: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .date-navigation {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .date-navigation input[type="date"] {
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .totals-row {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+
+        .totals-row td {
+            border-top: 2px solid #ddd;
+            padding: 10px;
+        }
+
+        .export-section {
+            margin: 20px 0;
+            text-align: right;
+        }
+
+        .export-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .export-btn:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="welcome-message">
+        Welcome {{ user_name }} to the Day Planner
+    </div>
+
+    <!-- Summary Section with Total Calories and Chart -->
+    <div class="macro-chart-container">
+        <canvas id="macroChart"></canvas>
+        <div class="macro-totals">
+            <div>Carbs: <span id="chartCarbs">0</span>g</div>
+            <div>Protein: <span id="chartProtein">0</span>g</div>
+            <div>Fats: <span id="chartFats">0</span>g</div>
+        </div>
+    </div>
+
+    <!-- Form to Add or Remove Meals -->
+    <div class="form-container">
+        <form method="POST" action="{% url 'add_to_plan' %}">
+            {% csrf_token %}
+            <input type="hidden" 
+                   id="date" 
+                   name="date" 
+                   value="{{ selected_date|date:'Y-m-d' }}">
+
+            <!-- Add filter controls for the food dropdown -->
+            <div class="food-filters">
+                <div class="filters-header">Filters</div>
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="filter_meal_type">Filter by Meal Type</label>
+                        <select id="filter_meal_type" onchange="filterFoodOptions()">
+                            <option value="all">All Meal Types</option>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter_user">Filter by User</label>
+                        <select id="filter_user" onchange="filterFoodOptions()">
+                            <option value="all">All Users</option>
+                            {% for food in available_foods %}
+                                <option value="{{ food.user_name }}">{{ food.user_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Protein Range (g)</label>
+                        <div class="protein-range">
+                            <input type="number" id="protein_min" placeholder="Min" onchange="filterFoodOptions()">
+                            <input type="number" id="protein_max" placeholder="Max" onchange="filterFoodOptions()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Food Selection Box -->
+            <div class="food-selection-box">
+                <div class="filters-header">Add Food Selection</div>
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="meal_type">Add as</label>
+                        <select id="meal_type" name="meal_type" required>
+                            <option value="breakfast">Breakfast</option>
+                            <option value="lunch">Lunch</option>
+                            <option value="dinner">Dinner</option>
+                            <option value="snack">Snack</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="food_entry">Select Food</label>
+                        <select id="food_entry" name="food_entry" required>
+                            <option value="">Select a food</option>
+                            {% for food in available_foods %}
+                                <option value="{{ food.id }}" 
+                                        data-meal-type="{{ food.meal_type }}"
+                                        data-protein="{{ food.protein }}"
+                                        data-user="{{ food.user_name }}">
+                                    {{ food.food_name }} 
+                                    ({{ food.carbs }}g carbs, {{ food.protein }}g protein, {{ food.fats }}g fats)
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button Container -->
+            <div class="button-container">
+                <button type="submit" class="standard-btn add-btn">Add to Plan</button>
+                <a href="{% url 'main' %}" class="return-btn" style="background-color: orange; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                    Return to Main
+                </a>
+            </div>
+
+            <!-- Insert the filter section below the buttons -->
+            <div class="filters-section">
+                <div class="filters-title">Filter Your Meal Plan</div>
+                <div class="filters-container">
+                    <div class="filter-group">
+                        <label for="food_search">Search Food</label>
+                        <input type="text" id="food_search" onkeyup="filterMealPlan()" placeholder="Search food names...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Calorie Range</label>
+                        <div class="protein-range">
+                            <input type="number" id="calories_min" placeholder="Min" onchange="filterMealPlan()">
+                            <input type="number" id="calories_max" placeholder="Max" onchange="filterMealPlan()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add this before the meal plan display section -->
+    <div class="date-navigation">
+        <input type="date" 
+               id="date_selector" 
+               value="{{ selected_date|date:'Y-m-d' }}" 
+               onchange="changePlanDate(this.value)">
+    </div>
+
+    <!-- Add export button -->
+    <div class="export-section">
+        <form method="GET" action="{% url 'export_day_plan' %}">
+            <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+            <button type="submit" class="export-btn">Export Day Plan to CSV</button>
+        </form>
+    </div>
+
+    <!-- Meal plan display section -->
+    <table>
+        <tr>
+            <th>Meal Type</th>
+            <th>Food Name</th>
+            <th>Added By</th>
+            <th>Carbs (g)</th>
+            <th>Protein (g)</th>
+            <th>Fats (g)</th>
+            <th>Calories</th>
+            <th>Actions</th>
+        </tr>
+        {% for plan in day_plans %}
+        <tr>
+            <td>{{ plan.meal_type|title }}</td>
+            <td>{{ plan.food_entry.food_name }}</td>
+            <td>{{ plan.food_entry.user_name }}</td>
+            <td>{{ plan.food_entry.carbs }}</td>
+            <td>{{ plan.food_entry.protein }}</td>
+            <td>{{ plan.food_entry.fats }}</td>
+            <td>{{ plan.food_entry.calories }}</td>
+            <td>
+                {% if plan.user_name == user_name %}
+                    <form method="POST" action="{% url 'remove_from_plan' plan.id %}" style="display: inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        <!-- Add the totals row back -->
+        <tr class="totals-row">
+            <td colspan="3"><strong>Totals:</strong></td>
+            <td id="total_carbs">{{ total_carbs }}</td>
+            <td id="total_protein">{{ total_protein }}</td>
+            <td id="total_fats">{{ total_fats }}</td>
+            <td id="total_calories">{{ total_calories }}</td>
+            <td></td>
+        </tr>
+    </table>
+
+    <script>
+    function filterFoodOptions() {
+        // get values from filters or default them
+        const mealTypeFilter = document.getElementById('filter_meal_type').value;
+        const userFilter = document.getElementById('filter_user').value;
+        const proteinMin = parseFloat(document.getElementById('protein_min').value) || 0;
+        const proteinMax = parseFloat(document.getElementById('protein_max').value) || 1000;
+        const foodSelect = document.getElementById('food_entry');
+        const options = foodSelect.getElementsByTagName('option');
+        // loop through the options and hide those that don't match the filters
+        for (let option of options) {
+            if (option.value === '') {
+                continue;
+            }
+            //  get the attributes of the current option
+            const mealType = option.getAttribute('data-meal-type');
+            const user = option.getAttribute('data-user');
+            const protein = parseFloat(option.getAttribute('data-protein'));
+
+            // ccheck if option matches the meal
+            let mealTypeMatch = false;
+            if (mealTypeFilter === 'all') {
+                mealTypeMatch = true;
+            } else if (mealTypeFilter === mealType) {
+                mealTypeMatch = true;
+            }
+
+            let userMatch = false;
+            if (userFilter === 'all') {
+                userMatch = true;
+            } else if (userFilter === user) {
+                userMatch = true;
+            }
+            let proteinMatch = false;
+            if (protein >= proteinMin && protein <= proteinMax) {
+                proteinMatch = true;
+            }
+            if (mealTypeMatch && userMatch && proteinMatch) {
+                option.style.display = '';
+            } else {
+                option.style.display = 'none';
+            }
+        }
+    }
+
+    // Initialize filters on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remove duplicate user options
+        const userSelect = document.getElementById('filter_user');
+        const seen = new Set();
+        Array.from(userSelect.options).forEach(option => {
+            if (seen.has(option.value)) {
+                userSelect.removeChild(option);
+            } else {
+                seen.add(option.value);
+            }
+        });
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+    let macroChart;
+
+    function updateMacroChart() {
+        const rows = document.querySelectorAll('table tr:not(.totals-row)');
+        let totalCarbs = 0;
+        let totalProtein = 0;
+        let totalFats = 0;
+
+        // Skip header row and calculate totals from visible rows
+        rows.forEach((row, index) => {
+            if (index === 0) return; // Skip header row
+            if (row.style.display !== 'none') {
+                totalCarbs += parseFloat(row.children[3].textContent) || 0;
+                totalProtein += parseFloat(row.children[4].textContent) || 0;
+                totalFats += parseFloat(row.children[5].textContent) || 0;
+            }
+        });
+
+        // Update the totals display
+        document.getElementById('chartCarbs').textContent = totalCarbs.toFixed(1);
+        document.getElementById('chartProtein').textContent = totalProtein.toFixed(1);
+        document.getElementById('chartFats').textContent = totalFats.toFixed(1);
+
+        // Calculate macro percentages
+        const totalGrams = totalCarbs + totalProtein + totalFats;
+        const carbsPercent = totalGrams ? ((totalCarbs / totalGrams) * 100).toFixed(1) : 0;
+        const proteinPercent = totalGrams ? ((totalProtein / totalGrams) * 100).toFixed(1) : 0;
+        const fatsPercent = totalGrams ? ((totalFats / totalGrams) * 100).toFixed(1) : 0;
+
+        // If chart exists, destroy it before creating a new one
+        if (macroChart) {
+            macroChart.destroy();
+        }
+
+        // Create new chart
+        const ctx = document.getElementById('macroChart').getContext('2d');
+        macroChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: [`Carbs ${carbsPercent}%`, `Protein ${proteinPercent}%`, `Fats ${fatsPercent}%`],
+                datasets: [{
+                    data: [totalCarbs, totalProtein, totalFats],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Call updateMacroChart when the page loads and when filters change
+    document.addEventListener('DOMContentLoaded', updateMacroChart);
+    // Update your existing filterTable function to call updateMacroChart
+    const oldFilterTable = window.filterTable;
+    window.filterTable = function() {
+        if (oldFilterTable) oldFilterTable();
+        updateMacroChart();
+    };
+    </script>
+
+    <script>
+    function filterMealPlan() {
+        const searchText = document.getElementById('food_search').value.toLowerCase();
+        const caloriesMin = parseFloat(document.getElementById('calories_min').value) || 0;
+        const caloriesMax = parseFloat(document.getElementById('calories_max').value) || 10000;
+        const rows = document.querySelectorAll('table tr:not(.totals-row)');
+
+        let totalCarbs = 0;
+        let totalProtein = 0;
+        let totalFats = 0;
+        let totalCalories = 0;
+
+        rows.forEach((row, index) => {
+            if (index === 0) return; // Skip header row
+
+            const foodName = row.children[1].textContent.toLowerCase(); // Food name is in second column
+            const calories = parseFloat(row.children[6].textContent) || 0;
+
+            const nameMatch = foodName.includes(searchText);
+            const caloriesMatch = calories >= caloriesMin && calories <= caloriesMax;
+
+            if (nameMatch && caloriesMatch) {
+                row.style.display = '';
+                // Add values from visible rows to totals
+                totalCarbs += parseFloat(row.children[3].textContent) || 0;
+                totalProtein += parseFloat(row.children[4].textContent) || 0;
+                totalFats += parseFloat(row.children[5].textContent) || 0;
+                totalCalories += parseFloat(row.children[6].textContent) || 0;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Update the totals row with new values
+        document.getElementById('total_carbs').textContent = totalCarbs.toFixed(2);
+        document.getElementById('total_protein').textContent = totalProtein.toFixed(2);
+        document.getElementById('total_fats').textContent = totalFats.toFixed(2);
+        document.getElementById('total_calories').textContent = totalCalories.toFixed(2);
+
+        updateMacroChart();
+    }
+
+    // Initialize filters on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        filterMealPlan();
+    });
+    </script>
+
+    <script>
+    function changePlanDate(date) {
+        window.location.href = `/part_1/day-planner/?date=${date}`;
+    }
+    </script>
+</body>
+</html>

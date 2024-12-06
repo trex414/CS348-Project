@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user_name }}'s Food Entry</title>
+    <style>
+        .welcome-message {
+            font-size: 30px;
+            color: black;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .form-container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #93b800;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #b4e100;
+        }
+        .remove-btn {
+            background-color: #f10000;
+        }
+        .remove-btn:hover {
+            background-color: #ff4242;
+        }
+        .return-btn {
+            background-color: orange; /* Orange background for return button */
+            color: white;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .return-btn:hover {
+            background-color: darkorange;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .input-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .input-row input[type="number"] {
+            width: 500px; 
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .standard-btn {
+            width: 150px;  /* Fixed width for all buttons */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .add-btn {
+            background-color: #93b800;
+        }
+        .add-btn:hover {
+            background-color: #b4e100;
+        }
+
+        .return-btn {
+            background-color: orange;
+        }
+        .return-btn:hover {
+            background-color: darkorange;
+        }
+
+        .edit-btn {
+            background-color: #93b800;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+        }
+        .edit-btn:hover {
+            background-color: #b4e100;
+        }
+        .delete-btn {
+            background-color: #f10000;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        .delete-btn:hover {
+            background-color: #ff4242;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-message">
+        Welcome {{ user_name }} to the Food Tracker
+    </div>
+
+    <div class="form-container">
+        <h2>Enter or Remove Food</h2>
+        <form action="{% url 'main' %}" method="POST">
+            {% csrf_token %}
+            <label for="food_name">Food Name:</label>
+            <input type="text" id="food_name" name="food_name" placeholder="Enter food name" required>
+            <label for="carbs">Carbs | Protein | Fats | Calories(g)</label>
+            <div class="input-row">
+                <input type="number" id="carbs" name="carbs" placeholder="Enter carbs in grams" required>
+
+                <input type="number" id="protein" name="protein" placeholder="Enter protein in grams" required>
+
+                <input type="number" id="fats" name="fats" placeholder="Enter fats in grams" required>
+
+                <input type="number" id="calories" name="calories" placeholder="Enter calories" required>
+            </div>
+
+            <label for="meal_type">Meal Type:</label>
+            <select id="meal_type" name="meal_type" required>
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+            </select>
+
+            <div class="button-container">
+                <button type="submit" class="standard-btn add-btn">Add Food</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="button-container">
+        <a href="{% url 'welcome' %}" class="standard-btn return-btn">Return Home</a>
+        <a href="{% url 'day_planner' %}" class="standard-btn return-btn">Day Planner</a>
+    </div>
+
+    <div style="text-align: right; margin: 20px 0;">
+        <form method="GET" action="{% url 'export_all_entries' %}">
+            <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">
+                Export All Entries to CSV
+            </button>
+        </form>
+    </div>
+
+    <h2>Breakfast Entries</h2>
+    <table>
+        <tr>
+            <th>Added By</th>
+            <th>Food Name</th>
+            <th>Carbs (g)</th>
+            <th>Protein (g)</th>
+            <th>Fats (g)</th>
+            <th>Calories</th>
+            <th>Actions</th>
+        </tr>
+        {% for entry in breakfast_entries %}
+        <tr>
+            <td>{{ entry.user_name }}</td>
+            <td>{{ entry.food_name }}</td>
+            <td>{{ entry.carbs }}</td>
+            <td>{{ entry.protein }}</td>
+            <td>{{ entry.fats }}</td>
+            <td>{{ entry.calories }}</td>
+            <td>
+                {% if entry.user_name == user_name %}
+                    <a href="{% url 'edit_food' entry.id %}" class="edit-btn">Edit</a>
+                    <form action="{% url 'remove_food' %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                        <button type="submit" class="delete-btn">Remove</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Lunch Entries</h2>
+    <table>
+        <tr>
+            <th>Added By</th>
+            <th>Food Name</th>
+            <th>Carbs (g)</th>
+            <th>Protein (g)</th>
+            <th>Fats (g)</th>
+            <th>Calories</th>
+            <th>Actions</th>
+        </tr>
+        {% for entry in lunch_entries %}
+        <tr>
+            <td>{{ entry.user_name }}</td>
+            <td>{{ entry.food_name }}</td>
+            <td>{{ entry.carbs }}</td>
+            <td>{{ entry.protein }}</td>
+            <td>{{ entry.fats }}</td>
+            <td>{{ entry.calories }}</td>
+            <td>
+                {% if entry.user_name == user_name %}
+                    <a href="{% url 'edit_food' entry.id %}" class="edit-btn">Edit</a>
+                    <form action="{% url 'remove_food' %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                        <button type="submit" class="delete-btn">Remove</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Dinner Entries</h2>
+    <table>
+        <tr>
+            <th>Added By</th>
+            <th>Food Name</th>
+            <th>Carbs (g)</th>
+            <th>Protein (g)</th>
+            <th>Fats (g)</th>
+            <th>Calories</th>
+            <th>Actions</th>
+        </tr>
+        {% for entry in dinner_entries %}
+        <tr>
+            <td>{{ entry.user_name }}</td>
+            <td>{{ entry.food_name }}</td>
+            <td>{{ entry.carbs }}</td>
+            <td>{{ entry.protein }}</td>
+            <td>{{ entry.fats }}</td>
+            <td>{{ entry.calories }}</td>
+            <td>
+                {% if entry.user_name == user_name %}
+                    <a href="{% url 'edit_food' entry.id %}" class="edit-btn">Edit</a>
+                    <form action="{% url 'remove_food' %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                        <button type="submit" class="delete-btn">Remove</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Snack Entries</h2>
+    <table>
+        <tr>
+            <th>Added By</th>
+            <th>Food Name</th>
+            <th>Carbs (g)</th>
+            <th>Protein (g)</th>
+            <th>Fats (g)</th>
+            <th>Calories</th>
+            <th>Actions</th>
+        </tr>
+        {% for entry in snack_entries %}
+        <tr>
+            <td>{{ entry.user_name }}</td>
+            <td>{{ entry.food_name }}</td>
+            <td>{{ entry.carbs }}</td>
+            <td>{{ entry.protein }}</td>
+            <td>{{ entry.fats }}</td>
+            <td>{{ entry.calories }}</td>
+            <td>
+                {% if entry.user_name == user_name %}
+                    <a href="{% url 'edit_food' entry.id %}" class="edit-btn">Edit</a>
+                    <form action="{% url 'remove_food' %}" method="POST" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="entry_id" value="{{ entry.id }}">
+                        <button type="submit" class="delete-btn">Remove</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

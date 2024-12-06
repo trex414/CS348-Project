@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Food Item</title>
+    <style>
+        .welcome-message {
+            font-size: 30px;
+            color: black;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .form-container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="welcome-message">
+        Welcome {{ user_name }} to the Food Tracker
+    </div>
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Food Item</title>
+    <style>
+         .welcome-message {
+            font-size: 30px;
+            color: black;
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        .form-container {
+            width: 300px;
+            margin: 0 auto;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #93b800;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #b4e100;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .input-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .input-row input[type="number"] {
+            width: 500px; 
+        }
+    </style>
+</head>
+<body>
+    <form action="{% url 'edit_food' entry.id %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="user_name" name="user_name" value="{{ entry.user_name }}" required>
+    
+        <label for="food_name">Food Name:</label>
+        <input type="text" id="food_name" name="food_name" value="{{ entry.food_name }}" required>
+    
+        <label for="carbs">Carbs | Protein | Fats | Calories(g)</label>
+        <div class="input-row">
+            <input type="number" id="carbs" name="carbs" value="{{entry.carbs}}" required>
+
+            <input type="number" id="protein" name="protein" value="{{entry.protein}}" required>
+
+            <input type="number" id="fats" name="fats" value="{{entry.fats}}" required>
+
+            <input type="number" id="calories" name="calories" value="{{ entry.calories }}" required>
+        </div>
+
+        <label for="meal_type">Meal Type:</label>
+        <select id="meal_type" name="meal_type" required>
+            <option value="breakfast" {% if entry.meal_type == "breakfast" %}selected{% endif %}>Breakfast</option>
+            <option value="lunch" {% if entry.meal_type == "lunch" %}selected{% endif %}>Lunch</option>
+            <option value="dinner" {% if entry.meal_type == "dinner" %}selected{% endif %}>Dinner</option>
+            <option value="snack" {% if entry.meal_type == "snack" %}selected{% endif %}>Snack</option>
+        </select>
+    
+        <button type="submit">Update</button>
+    </form>
+    </div>
+
+</body>
+</html>
+    </div>
+
+</body>
+</html>
