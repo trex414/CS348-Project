@@ -14,7 +14,7 @@ from .models import DayPlan
 from django.db import transaction
 from django.contrib import messages
 
-# 9 done with ORM and 4 done with prepared statements
+# 12 done with ORM and 5 done with prepared statements
 
 # welcome page using ORM
 def welcome_page(request):
@@ -494,7 +494,7 @@ def export_all_entries(request):
         ])
 
     return response
-
+# ORM
 def create_food_entry(request):
     try:
         with transaction.atomic():
@@ -529,7 +529,7 @@ def create_food_entry(request):
         return redirect('main')
     
     return redirect('main')
-
+# ORM
 def move_plan_entry(request, plan_id):
     try:
         user_name = request.session.get('user_name')
@@ -553,7 +553,7 @@ def move_plan_entry(request, plan_id):
         pass
     
     return redirect('day_planner')
-
+# ORM
 def update_user_data(request):
     try:
         user_name = request.session.get('user_name')
@@ -563,7 +563,7 @@ def update_user_data(request):
             user.save()
     except IntegrityError:
         return redirect('welcome')
-
+# ORM
 def modify_day_plan(request, plan_id):
     try:
         with transaction.atomic():
